@@ -15,11 +15,11 @@ SECONDARY_COLOR = "#d3d3d3"
 
 def binary_search(arr, val):
     """
-    Returns the index of a given value in a sorted array
+    Returns the index of a given value in a sorted array.
     
-    :param arr: Array to search
-    :param val: The value to search for
-    :return: The index of the value or False if it was not found
+    :param arr: Array to search.
+    :param val: The value to search for.
+    :return: The index of the value or False if it was not found.
     """
 
     # Pointers to array search area
@@ -45,34 +45,36 @@ def binary_search(arr, val):
 print(binary_search([10, 20, 30, 40, 50], 50))
 
 
+# Array cell properties
 rect_size = 75
 border = 5
-def draw_array(arr):
-    rects = []
+def draw_array(arr, x_offset, y_offset):
+    """
+    Draws a horizontal sequence of cells, where each cell corresponds to an element in the given array.
+
+    :param arr: Array to draw.
+    :param x_offset: X-Offset from top left corner of screen.
+    :param y_offset: Y-Offset from top left corner of screen.
+    """
+
     for i, display_text in enumerate(arr):
-        x = i * rect_size
-        y = 0
-        pos = {
-            "x": x,
-            "y": y
-        }
+        # Position of cell
+        x = x_offset + (i * rect_size)
+        y = y_offset + 0
 
-        rect = pygame.Rect(i * rect_size, 0, rect_size, rect_size)
-        rects.append((rect, display_text, pos))
+        # Create Rect object
+        rect = pygame.Rect(x, y, rect_size, rect_size)
         
-    for rect_item in rects:
-        rect = rect_item[0]
-        display_text = rect_item[1]
-        pos = rect_item[2]
-
+        # Draw cell and border
         pygame.draw.rect(screen, PRIMARY_COLOR, rect)
         pygame.draw.rect(screen, SECONDARY_COLOR, rect, border)
 
+        # Render text in cell
         text = font.render(f"{display_text}", True, SECONDARY_COLOR)
         padding = rect_size / 2
-        textX = pos["x"] + padding
-        textY = pos["y"] + padding
-        text_rect = text.get_rect(center=(textX, textY))
+        text_x = x + padding
+        text_y = y + padding
+        text_rect = text.get_rect(center=(text_x, text_y))
         screen.blit(text, text_rect)
 
 running = True
@@ -84,7 +86,7 @@ while running:
     
     screen.fill("#151515")
 
-    draw_array([0, 1, 2])
+    draw_array([0, 1, 2, 3, 4], 50, 50)
 
     # Displays contents onto screen
     pygame.display.update()
