@@ -77,21 +77,25 @@ def draw_array(arr, x_offset, y_offset):
         text_rect = text.get_rect(center=(text_x, text_y))
         screen.blit(text, text_rect)
 
-running = True
-while running:
-    # Allows the window to be closed on QUIT ("X" at top right of the window)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    
-    screen.fill("#151515")
+def init():
+    running = True
+    while running:
+        # Allows the window to be closed on QUIT ("X" at top right of the window)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        screen.fill("#151515")
 
-    draw_array([0, 1, 2, 3, 4], 50, 50)
+        draw_array([0, 1, 2, 3, 4], 50, 50)
 
-    # Displays contents onto screen
-    pygame.display.update()
-    
-    # Sets the FPS of the window to 60
-    clock.tick(60)
+        # Displays contents onto screen
+        pygame.display.update()
+        
+        # Sets the FPS of the window to 60
+        clock.tick(60)
 
-pygame.quit()
+    pygame.quit()
+
+if __name__ == "__main__":
+    init()
