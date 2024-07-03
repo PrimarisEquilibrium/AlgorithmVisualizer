@@ -1,97 +1,30 @@
 import pygame
+from collections import namedtuple
 from typing import Optional
 from enum import Enum
+
+from cell import Cell, CellArray
+from colors import colors
 
 
 # pygame setup
 pygame.init()
 pygame.font.init()
 pygame.display.set_caption("Kevin's Algorithm Visualizer")
+
+# Screen settings
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 800
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 # Array cell properties
 rect_size = 50
 border = 5
+
+# pygame Handlers
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 font = pygame.font.Font("fonts/Roboto-Regular.ttf", rect_size // 2)
 clock = pygame.time.Clock()
 
-PRIMARY_COLOR = "#151515"
-SECONDARY_COLOR = "#a6a6a6"
-INACTIVE_COLOR = "#454545"
-SELECTED_COLOR = "#ffffff"
-
-
-# Enumeration containing all the states a cell could be in
-class CellState(Enum):
-    ACTIVE = 1
-    INACTIVE = 2
-    SELECTED = 3
-
-# A Cell class containing a value and visual state
-class Cell:
-    def __init__(self, value, state=CellState.ACTIVE):
-        self.value = value
-        self.state = state
-
-    def __str__(self):
-        return f"Cell({self.value}, {self.state.name})"
-
-    def set_active(self):
-        self.state = CellState.ACTIVE
-    
-    def set_inactive(self):
-        self.state = CellState.INACTIVE
-    
-    def set_selected(self):
-        self.state = CellState.SELECTED
-    
-    def get_color(self):
-        match self.state:
-            case CellState.ACTIVE:
-                return SECONDARY_COLOR
-            case CellState.INACTIVE:
-                return INACTIVE_COLOR
-            case _:
-                return SELECTED_COLOR
-
-# CellArray class with methods to operate on all cells
-class CellArray():
-    def __init__(self, *args):
-        self.array = self.make_cell_array(*args)
-
-    def __str__(self):
-        return "[" + ", ".join(str(cell) for cell in self.array) + "]"
-    
-    def __len__(self):
-        return len(self.array)
-    
-    def make_cell_array(self, *args):
-        # Create a Cell object for each element in the array
-        return [Cell(arg) for arg in args]
-
-    def set_active(self, start, end=None):
-        if end is None:
-            # Single index case
-            index = start
-            self.array[index].set_active()
-        else:
-            # Range case
-            for i in range(start, end + 1):
-                self.array[i].set_active()
-
-    def set_inactive(self, start, end=None):
-        if end is None:
-            # Single index case
-            index = start
-            self.array[index].set_inactive()
-        else:
-            # Range case
-            for i in range(start, end + 1):
-                self.array[i].set_inactive()
-
-    def set_selected(self, index):
-        self.array[index].set_selected()
 
 class BinarySearch:
     def __init__(self, cell_array_obj: CellArray, val: int, x: int = 0, y: int = 0):
@@ -160,7 +93,7 @@ def draw_cell(cell, x, y):
     rect = pygame.Rect(x, y, rect_size, rect_size)
     
     # Draw cell and border
-    pygame.draw.rect(screen, PRIMARY_COLOR, rect)
+    pygame.draw.rect(screen, colors.BACKGROUND_COLOR, rect)
     pygame.draw.rect(screen, color, rect, border)
 
     # Render text in cell
@@ -170,6 +103,7 @@ def draw_cell(cell, x, y):
     text_y = y + padding
     text_rect = text.get_rect(center=(text_x, text_y))
     screen.blit(text, text_rect)
+
 
 def draw_cell_array(cell_array, x_offset, y_offset):
     """
@@ -187,6 +121,7 @@ def draw_cell_array(cell_array, x_offset, y_offset):
 
         draw_cell(cell, x, y)
 
+
 my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
 my_binary_search = BinarySearch(my_cell_array, 19)
 
@@ -198,7 +133,7 @@ def init():
             if event.type == pygame.QUIT:
                 running = False
         
-        screen.fill("#151515")
+        screen.fill(colors.BACKGROUND_COLOR)
 
         my_binary_search.search()
 
