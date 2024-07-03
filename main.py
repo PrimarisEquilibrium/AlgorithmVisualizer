@@ -25,7 +25,7 @@ class CellState(Enum):
 
 # A Cell class containing a value and visual state
 class Cell():
-    def __init__(self, value, state = CellState.ACTIVE):
+    def __init__(self, value, state=CellState.ACTIVE):
         self.value = value
         self.state = state
 
@@ -59,7 +59,31 @@ class CellArray():
         return "[" + ", ".join(str(cell) for cell in self.array) + "]"
     
     def make_cell_array(self, *args):
+        # Create a Cell object for each element in the array
         return [Cell(arg) for arg in args]
+
+    def set_active(self, start, end=None):
+        if end is None:
+            # Single index case
+            index = start
+            self.array[index].set_active()
+        else:
+            # Range case
+            for i in range(start, end + 1):
+                self.array[i].set_active()
+
+    def set_inactive(self, start, end=None):
+        if end is None:
+            # Single index case
+            index = start
+            self.array[index].set_inactive()
+        else:
+            # Range case
+            for i in range(start, end + 1):
+                self.array[i].set_inactive()
+
+    def set_selected(self, index):
+        self.array[index].set_selected()
 
 
 def binary_search(arr, val):
@@ -121,16 +145,16 @@ def draw_cell(cell, x, y):
     text_rect = text.get_rect(center=(text_x, text_y))
     screen.blit(text, text_rect)
 
-def draw_cell_array(cell_arr, x_offset, y_offset):
+def draw_cell_array(cell_array, x_offset, y_offset):
     """
     Draws a horizontal sequence of cells, where each cell corresponds to an element in the given cell array.
 
-    :param cell_arr: Cell array to draw.
+    :param cell_array: Cell array to draw.
     :param x_offset: X-Offset from top left corner of screen.
     :param y_offset: Y-Offset from top left corner of screen.
     """
 
-    for i, cell in enumerate(cell_arr):
+    for i, cell in enumerate(cell_array):
         # Position of cell
         x = x_offset + (i * rect_size)
         y = y_offset + 0
