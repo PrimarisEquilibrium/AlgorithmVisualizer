@@ -7,10 +7,13 @@ from enum import Enum
 pygame.init()
 pygame.font.init()
 pygame.display.set_caption("Kevin's Algorithm Visualizer")
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1600
+SCREEN_HEIGHT = 800
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-font = pygame.font.Font("fonts/Roboto-Regular.ttf", 25)
+# Array cell properties
+rect_size = 50
+border = 5
+font = pygame.font.Font("fonts/Roboto-Regular.ttf", rect_size // 2)
 clock = pygame.time.Clock()
 
 PRIMARY_COLOR = "#151515"
@@ -133,10 +136,14 @@ class BinarySearch:
             self.end = mid - 1
         
         return None
+    
+    def search(self):
+        self.draw()
+        self.initialize_cell_array()
+        mid, guess = self.get_guess()
+        self.compare_guess(mid, guess)
 
-# Array cell properties
-rect_size = 75
-border = 5
+
 def draw_cell(cell, x, y):
     """
     Draws a single cell with its label and visual state.
@@ -180,8 +187,8 @@ def draw_cell_array(cell_array, x_offset, y_offset):
 
         draw_cell(cell, x, y)
 
-my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-my_binary_search = BinarySearch(my_cell_array, 8)
+my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
+my_binary_search = BinarySearch(my_cell_array, 19)
 
 def init():
     running = True
@@ -193,18 +200,15 @@ def init():
         
         screen.fill("#151515")
 
-        my_binary_search.draw()
-        my_binary_search.initialize_cell_array()
-        mid, guess = my_binary_search.get_guess()
-        my_binary_search.compare_guess(mid, guess)
+        my_binary_search.search()
 
         # Displays contents onto screen
         pygame.display.update()
 
         # Sets the FPS of the window to 60
-        clock.tick(1)
+        clock.tick(60)
 
     pygame.quit()
 
 if __name__ == "__main__":
-    init()
+   init()
