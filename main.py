@@ -1,10 +1,12 @@
 import pygame
+from typing import Optional
 from enum import Enum
 
 
 # pygame setup
 pygame.init()
 pygame.font.init()
+pygame.display.set_caption("Kevin's Algorithm Visualizer")
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -24,7 +26,7 @@ class CellState(Enum):
     SELECTED = 3
 
 # A Cell class containing a value and visual state
-class Cell():
+class Cell:
     def __init__(self, value, state=CellState.ACTIVE):
         self.value = value
         self.state = state
@@ -58,6 +60,9 @@ class CellArray():
     def __str__(self):
         return "[" + ", ".join(str(cell) for cell in self.array) + "]"
     
+    def __len__(self):
+        return len(self.array)
+    
     def make_cell_array(self, *args):
         # Create a Cell object for each element in the array
         return [Cell(arg) for arg in args]
@@ -85,35 +90,49 @@ class CellArray():
     def set_selected(self, index):
         self.array[index].set_selected()
 
+class BinarySearch:
+    def __init__(self, cell_array_obj: CellArray, val: int, x: int = 0, y: int = 0):
+        self.cell_array_obj = cell_array_obj
+        self.val = val
+        self.x = x
+        self.y = y
+        self.cell_array = cell_array_obj.array
+        self.start, self.end = self.initialize_cell_array()
 
-def binary_search(arr, val):
-    """
-    Returns the index of a given value in a sorted array.
-    
-    :param arr: Cell array to search.
-    :param val: The value to search for.
-    :return: The index of the value or False if it was not found.
-    """
+    def draw(self) -> None:
+        draw_cell_array(self.cell_array, self.x, self.y)
 
-    # Pointers to array search area
-    start = 0
-    end = len(arr) - 1 # len(<list>) is a constant time operation
-    while end >= start:
-        mid = (start + end) // 2
-        guess = arr[mid]
-        print(f"Start: {start}, End: {end}, Mid: {mid}, Guess: {guess}")
+    def initialize_cell_array(self) -> tuple[int, int]:
+        self.draw()
+        # Pointers to array search area
+        start = 0
+        end = len(self.cell_array) - 1 # len(<list>) is a constant time operation
+        return start, end
+
+    def get_guess(self) -> tuple[int, int]:
+        mid = (self.start + self.end) // 2
+        guess = self.cell_array[mid]
+        self.cell_array_obj.set_selected(mid)
+        return mid, guess
+
+    def compare_guess(self, mid: int, guess: Cell) -> Optional[int]:
+        guess_val = guess.value
+
         # If guess is correct return index in the array
-        if guess == val:
-            print(f"Result found: {guess} at index [{mid}]")
+        if guess_val == self.val:
+            self.cell_array_obj.set_inactive(self.start, mid - 1)
+            self.cell_array_obj.set_inactive(mid + 1, self.end)
             return mid
         # If guess is smaller than value the value is in the larger half of the array
-        elif guess < val:
-            start = mid + 1
+        elif guess_val < self.val:
+            self.cell_array_obj.set_inactive(self.start, mid)
+            self.start = mid + 1
         # If guess is larger than value the value is in the smaller half of the array
         else:
-            end = mid - 1
-    print("Result not found")
-    return False
+            self.cell_array_obj.set_inactive(mid, self.end)
+            self.end = mid - 1
+        
+        return None
 
 # Array cell properties
 rect_size = 75
@@ -161,6 +180,8 @@ def draw_cell_array(cell_array, x_offset, y_offset):
 
         draw_cell(cell, x, y)
 
+my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+my_binary_search = BinarySearch(my_cell_array, 8)
 
 def init():
     running = True
@@ -172,11 +193,16 @@ def init():
         
         screen.fill("#151515")
 
+        my_binary_search.draw()
+        my_binary_search.initialize_cell_array()
+        mid, guess = my_binary_search.get_guess()
+        my_binary_search.compare_guess(mid, guess)
+
         # Displays contents onto screen
         pygame.display.update()
-        
+
         # Sets the FPS of the window to 60
-        clock.tick(60)
+        clock.tick(1)
 
     pygame.quit()
 
