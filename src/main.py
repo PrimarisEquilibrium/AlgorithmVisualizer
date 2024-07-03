@@ -1,4 +1,5 @@
 import pygame
+import math
 from typing import Optional
 
 from cell import Cell, CellArray
@@ -31,20 +32,16 @@ class BinarySearch:
         self.x = x
         self.y = y
         self.cell_array = cell_array_obj.array
-        self.start, self.end = self.initialize_cell_array()
+        self.start, self.end = 0, len(self.cell_array) - 1
+        # Pointers to array search area
+        self.left, self.right = self.start, self.end
 
     def draw(self) -> None:
         draw_cell_array(self.cell_array, self.x, self.y)
-
-    def initialize_cell_array(self) -> tuple[int, int]:
-        self.draw()
-        # Pointers to array search area
-        start = 0
-        end = len(self.cell_array) - 1 # len(<list>) is a constant time operation
-        return start, end
+        pygame.display.update()
 
     def get_guess(self) -> tuple[int, int]:
-        mid = (self.start + self.end) // 2
+        mid = (self.left + self.right) // 2
         guess = self.cell_array[mid]
         self.cell_array_obj.set_selected(mid)
         return mid, guess
@@ -59,20 +56,21 @@ class BinarySearch:
             return mid
         # If guess is smaller than value the value is in the larger half of the array
         elif guess_val < self.val:
-            self.cell_array_obj.set_inactive(self.start, mid)
-            self.start = mid + 1
+            self.cell_array_obj.set_inactive(self.start, mid - 1)
+            self.left = mid + 1 
         # If guess is larger than value the value is in the smaller half of the array
         else:
-            self.cell_array_obj.set_inactive(mid, self.end)
-            self.end = mid - 1
+            self.cell_array_obj.set_inactive(mid + 1, self.end)
+            self.right = mid - 1
         
         return None
     
-    def search(self) -> None:
+    def search_step(self) -> None:
         self.draw()
-        self.initialize_cell_array()
         mid, guess = self.get_guess()
+        self.draw()
         self.compare_guess(mid, guess)
+        self.draw()
 
 
 def draw_cell(cell: Cell, x: int, y: int) -> None:
@@ -124,16 +122,24 @@ my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 my_binary_search = BinarySearch(my_cell_array, 19)
 
 def init() -> None:
+    my_time = pygame.time.get_ticks()
+    interval = 500
     running = True
+
+    screen.fill(colors.BACKGROUND_COLOR)
+    my_binary_search.search_step()
+
     while running:
         # Allows the window to be closed on QUIT ("X" at top right of the window)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         
-        screen.fill(colors.BACKGROUND_COLOR)
-
-        my_binary_search.search()
+        current_time = pygame.time.get_ticks()
+        if current_time - my_time >= interval:
+            screen.fill(colors.BACKGROUND_COLOR)
+            my_time = current_time
+            my_binary_search.search_step()
 
         # Displays contents onto screen
         pygame.display.update()
