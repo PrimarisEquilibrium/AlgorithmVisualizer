@@ -1,7 +1,5 @@
 import pygame
-from collections import namedtuple
 from typing import Optional
-from enum import Enum
 
 from cell import Cell, CellArray
 from colors import colors
@@ -70,14 +68,14 @@ class BinarySearch:
         
         return None
     
-    def search(self):
+    def search(self) -> None:
         self.draw()
         self.initialize_cell_array()
         mid, guess = self.get_guess()
         self.compare_guess(mid, guess)
 
 
-def draw_cell(cell, x, y):
+def draw_cell(cell: Cell, x: int, y: int) -> None:
     """
     Draws a single cell with its label and visual state.
 
@@ -105,7 +103,7 @@ def draw_cell(cell, x, y):
     screen.blit(text, text_rect)
 
 
-def draw_cell_array(cell_array, x_offset, y_offset):
+def draw_cell_array(cell_array: CellArray, x_offset: int, y_offset: int) -> None:
     """
     Draws a horizontal sequence of cells, where each cell corresponds to an element in the given cell array.
 
@@ -125,7 +123,7 @@ def draw_cell_array(cell_array, x_offset, y_offset):
 my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
 my_binary_search = BinarySearch(my_cell_array, 19)
 
-def init():
+def init() -> None:
     running = True
     while running:
         # Allows the window to be closed on QUIT ("X" at top right of the window)
