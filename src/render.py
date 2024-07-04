@@ -10,6 +10,7 @@ border = 5
 pygame.font.init()
 font = pygame.font.Font("fonts/Roboto-Regular.ttf", rect_size // 2)
 
+
 def draw_cell(screen: pygame.Surface, cell: Cell, x: int, y: int) -> None:
     """
     Draws a single cell with its label and visual state.

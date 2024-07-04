@@ -10,6 +10,7 @@ class BSState(Enum):
     GET_GUESS = 1
     COMPARE_GUESS = 2
 
+
 class BinarySearch:
     def __init__(self, screen: pygame.Surface, cell_array_obj: CellArray, val: int, x: int = 0, y: int = 0):
         self.screen = screen
@@ -41,6 +42,7 @@ class BinarySearch:
         # Sets the current midpoint (as the guess) and value at the midpoint
         self._mid = (self.left + self.right) // 2
         self._guess = self.cell_array[self._mid]
+        
         # The current guess is highlighted on the screen
         self.cell_array_obj.set_selected(self._mid)
 
