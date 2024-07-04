@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Optional
 
 from cell import CellArray
+from colors import colors
 
 
 class BSState(Enum):
@@ -27,6 +28,7 @@ class BinarySearch:
 
         # Private state / variable iterators
         self._state = BSState.GET_GUESS
+        self._solution_found = False
         self._mid = None
         self._guess = None
 
@@ -43,9 +45,10 @@ class BinarySearch:
 
         # If guess is correct return index in the array
         if guess_val == self.val:
+            self.cell_array[self._mid].set_custom_color(colors.SOLUTION)
             self.cell_array_obj.set_inactive(self.start, self._mid - 1)
             self.cell_array_obj.set_inactive(self._mid + 1, self.end)
-            return self._mid
+            self._solution_found = True
         # If guess is smaller than value the value is in the larger half of the array
         elif guess_val < self.val:
             self.cell_array_obj.set_inactive(self.start, self._mid)
@@ -58,18 +61,20 @@ class BinarySearch:
         return None
     
     def search_step(self) -> None:
-        # For GET_GUESS state
-        #  Get the guess (midpoint of the CellArray) and mark it as "SELECTED"
-        #  Proceed the next call of this function to be the COMPARE_GUESS state
-        if (self._state == BSState.GET_GUESS):
-            self.get_guess()
-            self._state = BSState.COMPARE_GUESS
-        # For COMPARE_GUESS state
-        #  Make the previous "SELECTED" cell to be inactive (not the searched value)
-        #  Compare the current guess with the value to find and deactivate the according cells (as to compare_guess())
-        #  Proceed the next call of this function to be the GET_GUESS state
-        elif (self._state == BSState.COMPARE_GUESS):
-            self.cell_array_obj.set_inactive(self._mid)
-            self.compare_guess()
-            self._state = BSState.GET_GUESS
+        if self._solution_found:
+            pass
+        else:
+            # For GET_GUESS state
+            #  Get the guess (midpoint of the CellArray) and mark it as "SELECTED"
+            #  Proceed the next call of this function to be the COMPARE_GUESS state
+            if (self._state == BSState.GET_GUESS):
+                self.get_guess()
+                self._state = BSState.COMPARE_GUESS
+            # For COMPARE_GUESS state
+            #  Make the previous "SELECTED" cell to be inactive (not the searched value)
+            #  Compare the current guess with the value to find and deactivate the according cells (as to compare_guess())
+            #  Proceed the next call of this function to be the GET_GUESS state
+            elif (self._state == BSState.COMPARE_GUESS):
+                self.compare_guess()
+                self._state = BSState.GET_GUESS
         self.cell_array_obj.draw(self.x, self.y)

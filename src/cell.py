@@ -21,9 +21,10 @@ class CellState(Enum):
 
 # A Cell class containing a value and visual state
 class Cell:
-    def __init__(self, value: int, state: CellState = CellState.ACTIVE) -> None:
+    def __init__(self, value: int, state: CellState = CellState.ACTIVE, custom_color: Colors = None) -> None:
         self.value = value
         self.state = state
+        self.custom_color = custom_color
 
     def __str__(self) -> str:
         return f"Cell({self.value}, {self.state.name})"
@@ -64,14 +65,20 @@ class Cell:
     def set_selected(self) -> None:
         self.state = CellState.SELECTED
 
+    def set_custom_color(self, custom_color: Colors) -> None:
+        self.custom_color = custom_color
+
     def get_color(self) -> Colors:
-        match self.state:
-            case CellState.ACTIVE:
-                return colors.PRIMARY_COLOR
-            case CellState.INACTIVE:
-                return colors.INACTIVE_COLOR
-            case _:
-                return colors.SELECTED_COLOR
+        if self.custom_color:
+            return self.custom_color
+        else:
+            match self.state:
+                case CellState.ACTIVE:
+                    return colors.PRIMARY_COLOR
+                case CellState.INACTIVE:
+                    return colors.INACTIVE_COLOR
+                case _:
+                    return colors.SELECTED_COLOR
 
 
 # CellArray class with methods to operate on all cells

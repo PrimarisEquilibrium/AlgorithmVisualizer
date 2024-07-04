@@ -17,12 +17,12 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
 my_cell_array = CellArray(screen, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
-my_binary_search = BinarySearch(my_cell_array, 4)
+my_binary_search = BinarySearch(my_cell_array, 20)
 
 
 def init() -> None:
     my_time = pygame.time.get_ticks()
-    interval = 1000
+    interval = 500
     running = True
 
     screen.fill(colors.BACKGROUND_COLOR)
