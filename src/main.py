@@ -16,8 +16,8 @@ SCREEN_HEIGHT = 800
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
-my_binary_search = BinarySearch(screen, my_cell_array, 4)
+my_cell_array = CellArray(screen, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
+my_binary_search = BinarySearch(my_cell_array, 4)
 
 
 def init() -> None:
@@ -26,7 +26,7 @@ def init() -> None:
     running = True
 
     screen.fill(colors.BACKGROUND_COLOR)
-    
+
     my_binary_search.search_step()
 
     while running:

@@ -1,5 +1,15 @@
+import pygame
 from enum import Enum
+
 from colors import Colors, colors
+
+
+# Array cell properties
+rect_size = 50
+border = 5
+
+pygame.font.init()
+font = pygame.font.Font("fonts/Roboto-Regular.ttf", rect_size // 2)
 
 
 # Enumeration containing all the states a cell could be in
@@ -17,6 +27,33 @@ class Cell:
 
     def __str__(self) -> str:
         return f"Cell({self.value}, {self.state.name})"
+    
+    def draw(self, screen: pygame.Surface, x: int, y: int) -> None:
+        """
+        Draws a single cell with its label and visual state.
+
+        :param screen: The pygame screen
+        :param cell: Cell object.
+        :param x: X-Position of cell.
+        :param y: Y-Position of cell.
+        """
+
+        color = self.get_color()
+        
+        # Create Rect object
+        rect = pygame.Rect(x, y, rect_size, rect_size)
+        
+        # Draw cell and border
+        pygame.draw.rect(screen, colors.BACKGROUND_COLOR, rect)
+        pygame.draw.rect(screen, color, rect, border)
+
+        # Render text in cell
+        text = font.render(f"{self.value}", True, color)
+        padding = rect_size / 2
+        text_x = x + padding
+        text_y = y + padding
+        text_rect = text.get_rect(center=(text_x, text_y))
+        screen.blit(text, text_rect)
 
     def set_active(self) -> None:
         self.state = CellState.ACTIVE
@@ -39,38 +76,52 @@ class Cell:
 
 # CellArray class with methods to operate on all cells
 class CellArray():
-    def __init__(self, *args: int) -> None:
-        self.array = self.make_cell_array(*args)
+    def __init__(self, screen: pygame.Surface, array: list[int]) -> None:
+        self.screen = screen
+        self.cell_array = [Cell(value) for value in array]
 
     def __str__(self) -> str:
-        return "[" + ", ".join(str(cell) for cell in self.array) + "]"
+        return "[" + ", ".join(str(cell) for cell in self.cell_array) + "]"
     
     def __len__(self) -> int:
-        return len(self.array)
+        return len(self.cell_array)
     
-    def make_cell_array(self, *args: int) -> list[Cell]:
-        # Create a Cell object for each element in the array
-        return [Cell(arg) for arg in args]
+    def draw(self, x_offset: int, y_offset: int) -> None:
+        """
+        Draws a horizontal sequence of cells, where each cell corresponds to an element in the given cell array.
+
+        :param screen: The pygame screen
+        :param cell_array: Cell array to draw.
+        :param x_offset: X-Offset from top left corner of screen.
+        :param y_offset: Y-Offset from top left corner of screen.
+        """
+
+        for i, cell in enumerate(self.cell_array):
+            # Position of cell
+            x = x_offset + (i * rect_size)
+            y = y_offset + 0
+
+            cell.draw(self.screen, x, y)
 
     def set_active(self, start: int, end: int = None) -> None:
         if end is None:
             # Single index case
             index = start
-            self.array[index].set_active()
+            self.cell_array[index].set_active()
         else:
             # Range case
             for i in range(start, end + 1):
-                self.array[i].set_active()
+                self.cell_array[i].set_active()
 
     def set_inactive(self, start: int, end: int = None) -> None:
         if end is None:
             # Single index case
             index = start
-            self.array[index].set_inactive()
+            self.cell_array[index].set_inactive()
         else:
             # Range case
             for i in range(start, end + 1):
-                self.array[i].set_inactive()
+                self.cell_array[i].set_inactive()
 
     def set_selected(self, index: int) -> None:
-        self.array[index].set_selected()
+        self.cell_array[index].set_selected()

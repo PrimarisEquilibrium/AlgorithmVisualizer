@@ -1,9 +1,7 @@
-import pygame
 from enum import Enum
 from typing import Optional
 
 from cell import CellArray
-from render import draw_cell_array
 
 
 class BSState(Enum):
@@ -12,12 +10,11 @@ class BSState(Enum):
 
 
 class BinarySearch:
-    def __init__(self, screen: pygame.Surface, cell_array_obj: CellArray, val: int, x: int = 0, y: int = 0):
-        self.screen = screen
+    def __init__(self, cell_array_obj: CellArray, val: int, x: int = 0, y: int = 0):
         # cell_array_obj is the object instance of CellArray
         # cell_array     is the physical array of all Cells
         self.cell_array_obj = cell_array_obj
-        self.cell_array = cell_array_obj.array
+        self.cell_array = cell_array_obj.cell_array
         self.val = val
         self.x = x
         self.y = y
@@ -32,11 +29,6 @@ class BinarySearch:
         self._state = BSState.GET_GUESS
         self._mid = None
         self._guess = None
-
-    def draw(self) -> None:
-        # Renders the cell array to the screen then calls pygame to update it
-        draw_cell_array(self.screen, self.cell_array, self.x, self.y)
-        pygame.display.update()
 
     def get_guess(self) -> tuple[int, int]:
         # Sets the current midpoint (as the guess) and value at the midpoint
@@ -80,4 +72,4 @@ class BinarySearch:
             self.cell_array_obj.set_inactive(self._mid)
             self.compare_guess()
             self._state = BSState.GET_GUESS
-        self.draw()
+        self.cell_array_obj.draw(self.x, self.y)
