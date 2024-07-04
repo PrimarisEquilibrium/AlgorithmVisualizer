@@ -51,11 +51,6 @@ class CellArray():
     def make_cell_array(self, *args: int) -> list[Cell]:
         # Create a Cell object for each element in the array
         return [Cell(arg) for arg in args]
-    
-    def clear_selected(self) -> None:
-        for cell in self.array:
-            if cell.state == CellState.SELECTED:
-                cell.set_inactive()
 
     def set_active(self, start: int, end: int = None) -> None:
         if end is None:
