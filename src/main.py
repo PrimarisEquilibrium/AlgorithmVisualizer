@@ -1,28 +1,28 @@
 import pygame
-import math
 from typing import Optional
+from enum import Enum
 
-from cell import Cell, CellArray
+from cell import CellArray
+from render import draw_cell_array
 from colors import colors
 
 
 # pygame setup
 pygame.init()
-pygame.font.init()
 pygame.display.set_caption("Kevin's Algorithm Visualizer")
 
 # Screen settings
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 800
 
-# Array cell properties
-rect_size = 50
-border = 5
-
 # pygame Handlers
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-font = pygame.font.Font("fonts/Roboto-Regular.ttf", rect_size // 2)
 clock = pygame.time.Clock()
+
+
+class BSState(Enum):
+    GET_GUESS = 1
+    COMPARE_GUESS = 2
 
 
 class BinarySearch:
@@ -33,11 +33,15 @@ class BinarySearch:
         self.y = y
         self.cell_array = cell_array_obj.array
         self.start, self.end = 0, len(self.cell_array) - 1
+        self.state = BSState.GET_GUESS
         # Pointers to array search area
         self.left, self.right = self.start, self.end
 
+        self.mid = None
+        self.guess = None
+
     def draw(self) -> None:
-        draw_cell_array(self.cell_array, self.x, self.y)
+        draw_cell_array(screen, self.cell_array, self.x, self.y)
         pygame.display.update()
 
     def get_guess(self) -> tuple[int, int]:
@@ -46,84 +50,44 @@ class BinarySearch:
         self.cell_array_obj.set_selected(mid)
         return mid, guess
 
-    def compare_guess(self, mid: int, guess: Cell) -> Optional[int]:
-        guess_val = guess.value
+    def compare_guess(self) -> Optional[int]:
+        guess_val = self.guess.value
 
         # If guess is correct return index in the array
         if guess_val == self.val:
-            self.cell_array_obj.set_inactive(self.start, mid - 1)
-            self.cell_array_obj.set_inactive(mid + 1, self.end)
-            return mid
+            self.cell_array_obj.set_inactive(self.start, self.mid - 1)
+            self.cell_array_obj.set_inactive(self.mid + 1, self.end)
+            return self.mid
         # If guess is smaller than value the value is in the larger half of the array
         elif guess_val < self.val:
-            self.cell_array_obj.set_inactive(self.start, mid - 1)
-            self.left = mid + 1 
+            self.cell_array_obj.set_inactive(self.start, self.mid)
+            self.left = self.mid + 1 
         # If guess is larger than value the value is in the smaller half of the array
         else:
-            self.cell_array_obj.set_inactive(mid + 1, self.end)
-            self.right = mid - 1
+            self.cell_array_obj.set_inactive(self.mid, self.end)
+            self.right = self.mid - 1
         
         return None
     
     def search_step(self) -> None:
+        if (self.state == BSState.GET_GUESS):
+            mid, guess = self.get_guess()
+            self.mid = mid
+            self.guess = guess
+            self.state = BSState.COMPARE_GUESS
+        elif (self.state == BSState.COMPARE_GUESS):
+            self.cell_array_obj.clear_selected()
+            self.compare_guess()
+            self.state = BSState.GET_GUESS
         self.draw()
-        mid, guess = self.get_guess()
-        self.draw()
-        self.compare_guess(mid, guess)
-        self.draw()
-
-
-def draw_cell(cell: Cell, x: int, y: int) -> None:
-    """
-    Draws a single cell with its label and visual state.
-
-    :param cell: Cell object.
-    :param x: X-Position of cell.
-    :param y: Y-Position of cell.
-    """
-
-    value = cell.value
-    color = cell.get_color()
-    
-    # Create Rect object
-    rect = pygame.Rect(x, y, rect_size, rect_size)
-    
-    # Draw cell and border
-    pygame.draw.rect(screen, colors.BACKGROUND_COLOR, rect)
-    pygame.draw.rect(screen, color, rect, border)
-
-    # Render text in cell
-    text = font.render(f"{value}", True, color)
-    padding = rect_size / 2
-    text_x = x + padding
-    text_y = y + padding
-    text_rect = text.get_rect(center=(text_x, text_y))
-    screen.blit(text, text_rect)
-
-
-def draw_cell_array(cell_array: CellArray, x_offset: int, y_offset: int) -> None:
-    """
-    Draws a horizontal sequence of cells, where each cell corresponds to an element in the given cell array.
-
-    :param cell_array: Cell array to draw.
-    :param x_offset: X-Offset from top left corner of screen.
-    :param y_offset: Y-Offset from top left corner of screen.
-    """
-
-    for i, cell in enumerate(cell_array):
-        # Position of cell
-        x = x_offset + (i * rect_size)
-        y = y_offset + 0
-
-        draw_cell(cell, x, y)
 
 
 my_cell_array = CellArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
-my_binary_search = BinarySearch(my_cell_array, 19)
+my_binary_search = BinarySearch(my_cell_array, 4)
 
 def init() -> None:
     my_time = pygame.time.get_ticks()
-    interval = 500
+    interval = 1000
     running = True
 
     screen.fill(colors.BACKGROUND_COLOR)
