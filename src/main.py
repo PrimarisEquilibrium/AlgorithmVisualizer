@@ -1,4 +1,5 @@
 import pygame
+import pygame_textinput
 
 from cell import CellArray
 from algorithms import BinarySearch
@@ -19,27 +20,30 @@ clock = pygame.time.Clock()
 my_cell_array = CellArray(screen, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
 my_binary_search = BinarySearch(my_cell_array, 3)
 
+my_text_input = pygame_textinput.TextInputVisualizer()
+
 def init() -> None:
     my_time = pygame.time.get_ticks()
     interval = 500
     running = True
 
-    screen.fill(colors.BACKGROUND_COLOR)
-
-    my_binary_search.search_step()
-
     while running:
         events = pygame.event.get()
 
+        screen.fill(colors.BACKGROUND_COLOR)
+
         # Allows the window to be closed on QUIT ("X"  at top right of the window)
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 running = False
         
+        my_binary_search.render()
+
         current_time = pygame.time.get_ticks()
         if current_time - my_time >= interval:
             screen.fill(colors.BACKGROUND_COLOR)
             my_time = current_time
+            my_binary_search.render()
             my_binary_search.search_step()
 
         # Displays contents onto screen

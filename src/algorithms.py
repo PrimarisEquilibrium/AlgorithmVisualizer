@@ -77,4 +77,6 @@ class BinarySearch:
             elif (self._state == BSState.COMPARE_GUESS):
                 self.compare_guess()
                 self._state = BSState.GET_GUESS
+
+    def render(self) -> None:
         self.cell_array_obj.draw(self.x, self.y)
