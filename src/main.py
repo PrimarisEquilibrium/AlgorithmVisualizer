@@ -20,9 +20,36 @@ clock = pygame.time.Clock()
 my_cell_array = CellArray(screen, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
 my_binary_search = BinarySearch(my_cell_array, 3)
 
-my_text_input = pygame_textinput.TextInputVisualizer(
-    font_color=colors.PRIMARY_COLOR, cursor_color=colors.PRIMARY_COLOR, font_object=font
-)
+class InputBox:
+    def __init__(self, label: str, x: int, y: int, width: int, height: int, max_length: int = 20) -> None:
+        self.label = label
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.max_length = max_length
+
+        self.manager = pygame_textinput.TextInputManager(validator = lambda input : len(input) <= max_length)
+        self.textinput = pygame_textinput.TextInputVisualizer(
+            manager=self.manager,
+            font_color=colors.PRIMARY_COLOR, 
+            cursor_color=colors.PRIMARY_COLOR, 
+            font_object=font
+        )
+        self._text_box = pygame.Rect(x, y, width, height)
+    
+    def draw(self, events: list[pygame.event.Event]):
+        text = font.render(f"{self.label}", True, colors.SELECTED_COLOR)
+        screen.blit(text, (self.x, self.y - 35))
+        pygame.draw.rect(screen, colors.BACKGROUND_COLOR, self._text_box)
+        pygame.draw.rect(screen, colors.PRIMARY_COLOR, self._text_box, 5)
+        self.textinput.update(events)
+        _, text_height = self.textinput.surface.get_size()
+        padding = (self.height - text_height) // 2
+        screen.blit(self.textinput.surface, (self.x + padding, self.y + padding))
+
+input_box = InputBox("Array to search (seperated by commas)", 200, 200, 500, 50)
+val_box = InputBox("Value to find", 200, 300, 500, 50)
 
 def init() -> None:
     binary_search_array = None
@@ -35,15 +62,14 @@ def init() -> None:
         screen.fill(colors.BACKGROUND_COLOR)
 
         events = pygame.event.get()
-        my_text_input.update(events)
-        screen.blit(my_text_input.surface, (50, 50))
+        input_box.draw(events)
 
         if binary_search_array:
-            binary_search_array.render()
+            binary_search_array.draw()
             current_time = pygame.time.get_ticks()
             if current_time - my_time >= interval:
                 my_time = current_time
-                binary_search_array.render()
+                binary_search_array.draw()
                 binary_search_array.search_step()
 
         for event in events:
@@ -55,7 +81,7 @@ def init() -> None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 # Get user input
                 # Valid format is: "1, 2, ..., n" (seperated by commas)
-                user_input = my_text_input.value
+                user_input = input_box.textinput.value
                 try:
                     # String cleaning
                     user_array = ''.join(user_input.split())
@@ -70,8 +96,8 @@ def init() -> None:
                     print("Invalid input")
                 
                 # Clear textbox
-                my_text_input.value = ""
-                my_text_input.update(events)
+                input_box.textinput.value = ""
+                input_box.textinput.update(events)
 
         # Displays contents onto screen
         pygame.display.update()
