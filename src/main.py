@@ -1,5 +1,6 @@
 import pygame
 import pygame_textinput
+from typing import Callable, Any
 
 from cell import CellArray, font
 from algorithms import BinarySearch
@@ -65,7 +66,7 @@ class InputBox:
             return True
         return False
         
-    def toggle_focus(self) -> None:
+    def toggle_focus(self, events: list[pygame.event.Event]) -> None:
         # Toggle is_focused variable and cursor
         if (not self.is_focused):
             self.textinput.cursor_width = 4
@@ -73,10 +74,39 @@ class InputBox:
         else:
             self.textinput.cursor_width = 0
             self.is_focused = False
+        self.textinput.update(events)
+    
+    def handle_submission(self, function: Callable[[str], Any], events: list[pygame.event.Event]) -> None:
+        if (self.is_focused):
+            # Get user input
+            # Valid format is: "1, 2, ..., n" (seperated by commas)
+            user_input = self.textinput.value
+
+            # Clear textbox
+            input_box.textinput.value = ""
+            input_box.textinput.update(events)
+
+            return function(user_input)
             
 
 input_box = InputBox("Array to search (seperated by commas)", 200, 200, 500, 50)
 val_box = InputBox("Value to find", 200, 300, 500, 50)
+
+def cell_array_init(user_input):
+    try:
+        # String cleaning
+        user_array = ''.join(user_input.split())
+        user_array = user_array.split(",")
+        
+        # Converts each string number into an integer
+        user_array = list(map(lambda x : int(x), user_array))
+
+        print("yes")
+
+        cell_array = CellArray(screen, user_array)
+        return cell_array
+    except ValueError:
+        print("Invalid input")
 
 def init() -> None:
     binary_search_array = None
@@ -108,29 +138,14 @@ def init() -> None:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 if (input_box.cursor_in_textbox(mouse_x, mouse_y)):
-                    input_box.toggle_focus()
+                    input_box.toggle_focus(events)
+                else:
+                    input_box.is_focused = False
 
             # Handle input text submission
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                # Get user input
-                # Valid format is: "1, 2, ..., n" (seperated by commas)
-                user_input = input_box.textinput.value
-                try:
-                    # String cleaning
-                    user_array = ''.join(user_input.split())
-                    user_array = user_array.split(",")
-                    
-                    # Converts each string number into an integer
-                    user_array = list(map(lambda x : int(x), user_array))
-
-                    cell_array = CellArray(screen, user_array)
-                    binary_search_array = BinarySearch(cell_array, 5)
-                except ValueError:
-                    print("Invalid input")
-                
-                # Clear textbox
-                input_box.textinput.value = ""
-                input_box.textinput.update(events)
+                cell_array = input_box.handle_submission(cell_array_init, events)
+                print(cell_array)
 
         # Displays contents onto screen
         pygame.display.update()
