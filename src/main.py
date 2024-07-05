@@ -29,6 +29,7 @@ class InputBox:
         self.height = height
         self.max_length = max_length
 
+        # Base pygame text input module
         self.manager = pygame_textinput.TextInputManager(validator = lambda input : len(input) <= max_length)
         self.textinput = pygame_textinput.TextInputVisualizer(
             manager=self.manager,
@@ -39,10 +40,15 @@ class InputBox:
         self._text_box = pygame.Rect(x, y, width, height)
     
     def draw(self, events: list[pygame.event.Event]):
+        # Draw input box label
         text = font.render(f"{self.label}", True, colors.SELECTED_COLOR)
         screen.blit(text, (self.x, self.y - 35))
+
+        # Draw box around text input
         pygame.draw.rect(screen, colors.BACKGROUND_COLOR, self._text_box)
         pygame.draw.rect(screen, colors.PRIMARY_COLOR, self._text_box, 5)
+
+        # Draw the text input
         self.textinput.update(events)
         _, text_height = self.textinput.surface.get_size()
         padding = (self.height - text_height) // 2
