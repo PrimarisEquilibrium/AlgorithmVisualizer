@@ -76,22 +76,45 @@ class InputBox:
             self.is_focused = False
         self.textinput.update(events)
     
-    def handle_submission(self, function: Callable[[str], Any], events: list[pygame.event.Event]) -> None:
-        if (self.is_focused):
-            # Get user input
-            # Valid format is: "1, 2, ..., n" (seperated by commas)
-            user_input = self.textinput.value
+    def get_value(self) -> str:
+        return self.textinput.value
+    
+class Button:
+    def __init__(self, label: str, x: int, y: int, width: int, height: int, on_click: Callable) -> None:
+        self.label = label
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.on_click = on_click
+    
+    def draw(self) -> None:
+        button_rect = pygame.rect.Rect(self.x, self.y, self.width, self.height)
 
-            # Clear textbox
-            input_box.textinput.value = ""
-            input_box.textinput.update(events)
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if self.is_mouse_over(mouse_x, mouse_y):
+            if pygame.mouse.get_pressed()[0]:
+                pygame.draw.rect(screen, colors.ACTIVE_COLOR, button_rect)
+            else:
+                pygame.draw.rect(screen, colors.HOVER_COLOR, button_rect)
+        else:
+            pygame.draw.rect(screen, colors.BACKGROUND_COLOR, button_rect)
+        pygame.draw.rect(screen, colors.PRIMARY_COLOR, button_rect, 5)
 
-            return function(user_input)
-            
-
-input_box = InputBox("Array to search (seperated by commas)", 200, 200, 500, 50)
-val_box = InputBox("Value to find", 200, 300, 500, 50)
-
+        text = font.render(f"{self.label}", True, colors.SELECTED_COLOR)
+        width_padding = self.width / 2
+        height_padding = self.height / 2
+        text_x = self.x + width_padding
+        text_y = self.y + height_padding
+        text_rect = text.get_rect(center=(text_x, text_y))
+        screen.blit(text, text_rect)
+    
+    def is_mouse_over(self, mouse_x: int, mouse_y: int) -> bool:
+        if (mouse_x >= self.x and mouse_y >= self.y and
+            mouse_x <= self.x + self.width and mouse_y <= self.y + self.height):
+            return True
+        return False
+    
 def cell_array_init(user_input):
     try:
         # String cleaning
@@ -101,12 +124,21 @@ def cell_array_init(user_input):
         # Converts each string number into an integer
         user_array = list(map(lambda x : int(x), user_array))
 
-        print("yes")
-
         cell_array = CellArray(screen, user_array)
         return cell_array
     except ValueError:
         print("Invalid input")
+
+
+input_box = InputBox("Array to search (seperated by commas)", 200, 200, 500, 50)
+val_box = InputBox("Value to find", 200, 300, 500, 50)
+
+def get_input_data():
+    cell_array = cell_array_init(input_box.get_value())
+    val = int(val_box.get_value())
+    return BinarySearch(cell_array, val, 0, 0)
+
+submit_btn = Button("Submit", 200, 400, 150, 75, get_input_data)
 
 def init() -> None:
     binary_search_array = None
@@ -120,6 +152,8 @@ def init() -> None:
 
         events = pygame.event.get()
         input_box.draw(events)
+        val_box.draw(events)
+        submit_btn.draw()
 
         if binary_search_array:
             binary_search_array.draw()
@@ -137,15 +171,22 @@ def init() -> None:
             # Handles input box focus
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
+                if submit_btn.is_mouse_over(mouse_x, mouse_y):
+                    binary_search_array = submit_btn.on_click()
+
                 if (input_box.cursor_in_textbox(mouse_x, mouse_y)):
                     input_box.toggle_focus(events)
                 else:
                     input_box.is_focused = False
 
+                if (val_box.cursor_in_textbox(mouse_x, mouse_y)):
+                    val_box.toggle_focus(events)
+                else:
+                    val_box.is_focused = False
+
             # Handle input text submission
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                cell_array = input_box.handle_submission(cell_array_init, events)
-                print(cell_array)
+                print(input_box.get_value())
 
         # Displays contents onto screen
         pygame.display.update()
