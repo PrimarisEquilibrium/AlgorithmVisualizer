@@ -1,7 +1,7 @@
 import pygame
 import pygame_textinput
 
-from cell import CellArray
+from cell import CellArray, font
 from algorithms import BinarySearch
 from colors import colors
 
@@ -21,10 +21,12 @@ my_cell_array = CellArray(screen, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
 my_binary_search = BinarySearch(my_cell_array, 3)
 
 my_text_input = pygame_textinput.TextInputVisualizer(
-    font_color=colors.PRIMARY_COLOR, cursor_color=colors.PRIMARY_COLOR
+    font_color=colors.PRIMARY_COLOR, cursor_color=colors.PRIMARY_COLOR, font_object=font
 )
 
 def init() -> None:
+    binary_search_array = None
+
     my_time = pygame.time.get_ticks()
     interval = 500
     running = True
@@ -32,22 +34,44 @@ def init() -> None:
     while running:
         screen.fill(colors.BACKGROUND_COLOR)
 
-        my_binary_search.render()
-        current_time = pygame.time.get_ticks()
-        if current_time - my_time >= interval:
-            screen.fill(colors.BACKGROUND_COLOR)
-            my_time = current_time
-            my_binary_search.render()
-            my_binary_search.search_step()
-
         events = pygame.event.get()
         my_text_input.update(events)
         screen.blit(my_text_input.surface, (50, 50))
 
-        # Allows the window to be closed on QUIT ("X"  at top right of the window)
+        if binary_search_array:
+            binary_search_array.render()
+            current_time = pygame.time.get_ticks()
+            if current_time - my_time >= interval:
+                my_time = current_time
+                binary_search_array.render()
+                binary_search_array.search_step()
+
         for event in events:
+            # Allows the window to be closed on QUIT ("X" at top right of the window)
             if event.type == pygame.QUIT:
                 running = False
+
+            # Handle input text submission
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                # Get user input
+                # Valid format is: "1, 2, ..., n" (seperated by commas)
+                user_input = my_text_input.value
+                try:
+                    # String cleaning
+                    user_array = ''.join(user_input.split())
+                    user_array = user_array.split(",")
+                    
+                    # Converts each string number into an integer
+                    user_array = list(map(lambda x : int(x), user_array))
+
+                    cell_array = CellArray(screen, user_array)
+                    binary_search_array = BinarySearch(cell_array, 5)
+                except ValueError:
+                    print("Invalid input")
+                
+                # Clear textbox
+                my_text_input.value = ""
+                my_text_input.update(events)
 
         # Displays contents onto screen
         pygame.display.update()
