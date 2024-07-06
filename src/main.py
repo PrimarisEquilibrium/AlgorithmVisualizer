@@ -33,15 +33,15 @@ def cell_array_init(user_input):
         print("Invalid input")
 
 
-input_box = InputBox("Array to search (seperated by commas)", 200, 200, 500, 50)
-val_box = InputBox("Value to find", 200, 300, 500, 50)
+input_box = InputBox(screen, "Array to search (seperated by commas)", 35, 60, 500, 50, 30)
+val_box = InputBox(screen, "Value to find", 35, 160, 500, 50)
 
 def get_input_data():
     cell_array = cell_array_init(input_box.get_value())
     val = int(val_box.get_value())
     return cell_array, val
 
-submit_btn = Button("Submit", 200, 400, 150, 75, get_input_data)
+submit_btn = Button(screen, "Submit", 35, 240, 125, 60, get_input_data)
 
 def init() -> None:
     binary_search_array: BinarySearch = None
@@ -50,13 +50,15 @@ def init() -> None:
     interval = 500
     running = True
 
+    display_input = True
     while running:
         screen.fill(colors.BACKGROUND_COLOR)
 
         events = pygame.event.get()
-        input_box.draw(screen, events)
-        val_box.draw(screen, events)
-        submit_btn.draw(screen)
+        if (display_input):
+            input_box.draw(events)
+            val_box.draw(events)
+            submit_btn.draw()
 
         if binary_search_array:
             binary_search_array.draw()
@@ -71,19 +73,16 @@ def init() -> None:
             if event.type == pygame.QUIT:
                 running = False
             
-            # Handles input box focus
+            # Handles left mouse press
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 if submit_btn.is_mouse_over(mouse_x, mouse_y):
                     cell_array, val = submit_btn.on_click()
-                    binary_search_array = BinarySearch(cell_array, val)
+                    binary_search_array = BinarySearch(cell_array, val, 100, 100)
+                    display_input = False
 
                 input_box.handle_focus(events, mouse_x, mouse_y)
                 val_box.handle_focus(events, mouse_x, mouse_y)
-
-            # Handle input text submission
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                print(input_box.get_value())
 
         # Displays contents onto screen
         pygame.display.update()
