@@ -44,7 +44,7 @@ def get_input_data():
 submit_btn = Button("Submit", 200, 400, 150, 75, get_input_data)
 
 def init() -> None:
-    binary_search_array = None
+    binary_search_array: BinarySearch = None
 
     my_time = pygame.time.get_ticks()
     interval = 500
