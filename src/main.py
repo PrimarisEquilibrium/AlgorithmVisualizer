@@ -39,7 +39,7 @@ val_box = InputBox("Value to find", 200, 300, 500, 50)
 def get_input_data():
     cell_array = cell_array_init(input_box.get_value())
     val = int(val_box.get_value())
-    return BinarySearch(cell_array, val, 0, 0)
+    return cell_array, val
 
 submit_btn = Button("Submit", 200, 400, 150, 75, get_input_data)
 
@@ -75,17 +75,11 @@ def init() -> None:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 if submit_btn.is_mouse_over(mouse_x, mouse_y):
-                    binary_search_array = submit_btn.on_click()
+                    cell_array, val = submit_btn.on_click()
+                    binary_search_array = BinarySearch(cell_array, val)
 
-                if (input_box.cursor_in_textbox(mouse_x, mouse_y)):
-                    input_box.toggle_focus(events)
-                else:
-                    input_box.is_focused = False
-
-                if (val_box.cursor_in_textbox(mouse_x, mouse_y)):
-                    val_box.toggle_focus(events)
-                else:
-                    val_box.is_focused = False
+                input_box.handle_focus(events, mouse_x, mouse_y)
+                val_box.handle_focus(events, mouse_x, mouse_y)
 
             # Handle input text submission
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:

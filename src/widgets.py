@@ -59,9 +59,16 @@ class InputBox:
             self.textinput.cursor_width = 0
             self.is_focused = False
         self.textinput.update(events)
+
+    def handle_focus(self, events: pygame.event.Event, mouse_x: int, mouse_y: int):
+        if (self.cursor_in_textbox(mouse_x, mouse_y)):
+            self.toggle_focus(events)
+        else:
+            self.is_focused = False
     
     def get_value(self) -> str:
         return self.textinput.value
+        
     
 class Button:
     def __init__(self, label: str, x: int, y: int, width: int, height: int, on_click: Callable) -> None:
