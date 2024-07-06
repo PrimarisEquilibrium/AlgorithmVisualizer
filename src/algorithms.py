@@ -1,8 +1,10 @@
+import pygame
 from enum import Enum
 from typing import Optional
 
 from cell import CellArray
 from colors import colors
+from font import font, header
 
 
 class BSState(Enum):
@@ -25,6 +27,9 @@ class BinarySearch:
 
         # Pointers to array search area
         self.left, self.right = self.start, self.end
+
+        # Steps the algorithm has performed so far
+        self.steps = 0
 
         # Private state / variable iterators
         self._state = BSState.GET_GUESS
@@ -78,5 +83,13 @@ class BinarySearch:
                 self.compare_guess()
                 self._state = BSState.GET_GUESS
 
-    def draw(self) -> None:
+                # A "step" in the algorithm occurs after both states are complete
+                self.steps += 1
+                print(self.steps)
+
+    def draw(self, screen: pygame.Surface) -> None:
+        text = header.render("Binary Search Algorithm", True, colors.SELECTED_COLOR)
+        screen.blit(text, (self.x, self.y - 100))
+        text = font.render(f"Steps: {self.steps}", True, colors.SELECTED_COLOR)
+        screen.blit(text, (self.x, self.y + 70))
         self.cell_array_obj.draw(self.x, self.y)

@@ -61,11 +61,11 @@ def init() -> None:
             submit_btn.draw()
 
         if binary_search_array:
-            binary_search_array.draw()
+            binary_search_array.draw(screen)
             current_time = pygame.time.get_ticks()
             if current_time - my_time >= interval:
                 my_time = current_time
-                binary_search_array.draw()
+                binary_search_array.draw(screen)
                 binary_search_array.search_step()
 
         for event in events:
@@ -78,7 +78,7 @@ def init() -> None:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 if submit_btn.is_mouse_over(mouse_x, mouse_y):
                     cell_array, val = submit_btn.on_click()
-                    binary_search_array = BinarySearch(cell_array, val, 100, 100)
+                    binary_search_array = BinarySearch(cell_array, val, 50, 140)
                     display_input = False
 
                 input_box.handle_focus(events, mouse_x, mouse_y)

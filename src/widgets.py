@@ -4,6 +4,8 @@ import pygame_textinput
 from typing import Callable, Any
 from cell import font
 from colors import colors
+from font import font
+
 
 class InputBox:
     def __init__(self, screen: pygame.Surface, label: str, x: int, y: int, width: int, height: int, max_length: int = 20) -> None:

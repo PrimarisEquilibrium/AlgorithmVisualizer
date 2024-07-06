@@ -2,14 +2,12 @@ import pygame
 from enum import Enum
 
 from colors import Colors, colors
+from font import font
 
 
 # Array cell properties
 rect_size = 50
 border = 5
-
-pygame.font.init()
-font = pygame.font.Font("fonts/Roboto-Regular.ttf", rect_size // 2)
 
 
 # Enumeration containing all the states a cell could be in
