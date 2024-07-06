@@ -3,8 +3,7 @@ from enum import Enum
 from typing import Optional
 
 from cell import CellArray
-from colors import colors
-from font import font, header
+from config import colors, font, header
 
 
 class BSState(Enum):
@@ -85,7 +84,6 @@ class BinarySearch:
 
                 # A "step" in the algorithm occurs after both states are complete
                 self.steps += 1
-                print(self.steps)
 
     def draw(self, screen: pygame.Surface) -> None:
         text = header.render("Binary Search Algorithm", True, colors.SELECTED_COLOR)

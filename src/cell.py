@@ -1,13 +1,7 @@
 import pygame
 from enum import Enum
 
-from colors import Colors, colors
-from font import font
-
-
-# Array cell properties
-rect_size = 50
-border = 5
+from config import rect_size, border_size, Colors, colors, font
 
 
 # Enumeration containing all the states a cell could be in
@@ -44,7 +38,7 @@ class Cell:
         
         # Draw cell and border
         pygame.draw.rect(screen, colors.BACKGROUND_COLOR, rect)
-        pygame.draw.rect(screen, color, rect, border)
+        pygame.draw.rect(screen, color, rect, border_size)
 
         # Render text in cell
         text = font.render(f"{self.value}", True, color)

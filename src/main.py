@@ -2,16 +2,17 @@ import pygame
 
 from cell import CellArray
 from algorithms import BinarySearch
-from colors import colors
+from config import colors
 from widgets import InputBox, Button
+
 
 # pygame setup
 pygame.init()
 pygame.display.set_caption("Kevin's Algorithm Visualizer")
 
 # Screen settings
-SCREEN_WIDTH = 1600
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
 # pygame Handlers
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
