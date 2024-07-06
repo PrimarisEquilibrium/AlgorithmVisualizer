@@ -61,7 +61,6 @@ class InputBox:
             self.textinput.cursor_width = 0
             self.textinput.cursor_color = colors.BACKGROUND_COLOR
             self.is_focused = False
-        print(self.is_focused)
         self.draw(events)
 
     def handle_focus(self, events: pygame.event.Event, mouse_x: int, mouse_y: int):

@@ -108,6 +108,11 @@ class CellArray():
             x = x_offset + (i * rect_size)
             y = y_offset + 0
 
+            # Draw index above cell
+            text = font.render(f"{i}", True, colors.SELECTED_COLOR)
+            text_rect = text.get_rect(center=(x + rect_size / 2, y - rect_size / 2))
+            self.screen.blit(text, text_rect)
+
             cell.draw(self.screen, x, y)
 
     def set_active(self, start: int, end: int = None) -> None:
