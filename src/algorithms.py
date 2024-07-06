@@ -4,6 +4,7 @@ from typing import Optional
 
 from cell import CellArray
 from config import colors, font, header
+from widgets import draw_text
 
 
 class BSState(Enum):
@@ -86,8 +87,7 @@ class BinarySearch:
                 self.steps += 1
 
     def draw(self, screen: pygame.Surface) -> None:
-        text = header.render("Binary Search Algorithm", True, colors.SELECTED_COLOR)
-        screen.blit(text, (self.x, self.y - 100))
-        text = font.render(f"Steps: {self.steps}", True, colors.SELECTED_COLOR)
-        screen.blit(text, (self.x, self.y + 70))
+        draw_text(screen, header, colors.SELECTED_COLOR, "Binary Search Algorithm", self.x, self.y - 100)
+        draw_text(screen, font, colors.SELECTED_COLOR, f"Steps: {self.steps}", self.x, self.y + 70)
+        
         self.cell_array_obj.draw(self.x, self.y)

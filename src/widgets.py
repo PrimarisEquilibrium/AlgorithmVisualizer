@@ -3,7 +3,18 @@ import pygame_textinput
 
 from typing import Callable
 from cell import font
-from config import colors, font
+from config import Colors, colors, font
+
+
+def draw_text(screen: pygame.Surface, font: pygame.font.Font, color: Colors, text: str, x: int, y: int) -> None:
+    text = font.render(f"{text}", True, color)
+    screen.blit(text, (x, y))
+
+
+def draw_centered_text(screen: pygame.Surface, font: pygame.font.Font, color: Colors, text: str, x: int, y: int):
+    text: pygame.Surface = font.render(f"{text}", True, color)
+    text_rect = text.get_rect(center=(x, y))
+    screen.blit(text, text_rect)
 
 
 class InputBox:
@@ -30,8 +41,7 @@ class InputBox:
     
     def draw(self, events: list[pygame.event.Event]) -> None:
         # Draw input box label
-        text = font.render(f"{self.label}", True, colors.SELECTED_COLOR)
-        self.screen.blit(text, (self.x, self.y - 35))
+        draw_text(self.screen, font, colors.SELECTED_COLOR, f"{self.label}", self.x, self.y - 35)
 
         # Draw box around text input
         pygame.draw.rect(self.screen, colors.BACKGROUND_COLOR, self._text_box)

@@ -2,6 +2,7 @@ import pygame
 from enum import Enum
 
 from config import rect_size, border_size, Colors, colors, font
+from widgets import draw_centered_text
 
 
 # Enumeration containing all the states a cell could be in
@@ -41,12 +42,8 @@ class Cell:
         pygame.draw.rect(screen, color, rect, border_size)
 
         # Render text in cell
-        text = font.render(f"{self.value}", True, color)
         padding = rect_size / 2
-        text_x = x + padding
-        text_y = y + padding
-        text_rect = text.get_rect(center=(text_x, text_y))
-        screen.blit(text, text_rect)
+        draw_centered_text(screen, font, color, self.value, x + padding, y + padding)
 
     def set_active(self) -> None:
         self.state = CellState.ACTIVE
@@ -101,9 +98,7 @@ class CellArray():
             y = y_offset + 0
 
             # Draw index above cell
-            text = font.render(f"{i}", True, colors.SELECTED_COLOR)
-            text_rect = text.get_rect(center=(x + rect_size / 2, y - rect_size / 2))
-            self.screen.blit(text, text_rect)
+            draw_centered_text(self.screen, font, colors.SELECTED_COLOR, f"{i}", x + rect_size / 2, y - rect_size / 2)
 
             cell.draw(self.screen, x, y)
 
