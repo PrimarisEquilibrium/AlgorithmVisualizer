@@ -98,7 +98,6 @@ def insertion_sort(array):
         array[i1], array[i2] = array[i2], array[i1]
     
     for i in range(1, len(array)):
-        print(f"Step {i}: {array}")
         j = i
         while j > 0 and array[j] < array[j - 1]:
             swap(j, j - 1)
@@ -123,8 +122,6 @@ class InsertionSort:
         self.cell_array_obj.set_solution(0, self.i)
     
     def swap(self) -> None:
-        print(self.j)
-        print(self.cell_array_obj)
         if self.j > 0 and self.cell_array[self.j].value < self.cell_array[self.j - 1].value:
             self.cell_array_obj.swap(self.j, self.j - 1)
             self.j -= 1
