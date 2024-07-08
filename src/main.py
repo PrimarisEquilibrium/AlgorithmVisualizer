@@ -33,10 +33,8 @@ class AlgorithmVisualizer:
         self.input_boxes = []
         self.buttons = []
 
-        # home_buttons[X][0] is the label of the button
-        # home_buttons[X][1] is the button object
         self.home_buttons = [
-            ("bsa", Button(screen, "Binary Search Algorithm", 50, 50, 260, 60, (lambda x: None)))
+            {"label": "bsa", "obj": Button(screen, "Binary Search Algorithm", 50, 50, 260, 60, (lambda: None))}
         ]
 
     def cell_array_init(self, user_input: str) -> Optional[CellArray]:
@@ -98,16 +96,15 @@ class AlgorithmVisualizer:
     def home_page(self, events):
         # Home page contains buttons to select an algorithm
         for button in self.home_buttons:
-            button[1].draw()
+            button["obj"].draw()
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 for button in self.home_buttons:
-                    algorithm, btn = button
-                    if (btn.is_mouse_over(mouse_x, mouse_y)):
+                    if (button["obj"].is_mouse_over(mouse_x, mouse_y)):
                         # Set the algorithm and change the program state to the algorithm argument input section
-                        self.algorithm_chosen = algorithm
+                        self.algorithm_chosen = button["label"]
                         self.state = "input"
     
     _ui_variables_bounded = False
