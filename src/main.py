@@ -44,6 +44,47 @@ def get_input_data():
 
 submit_btn = Button(screen, "Submit", 35, 240, 125, 60, get_input_data)
 
+class AlgorithmVisualizer:
+    def __init__(self) -> None:
+        self.current_algorithm_obj = None
+        self.time = pygame.time.get_ticks()
+        self.interval = 500 # Interval (in ms) between each algorithm step
+        self.running = True # Toggles if the game loop is running
+        self.state = "home"
+        self.algorithm_chosen = None
+    
+    def run(self) -> None:
+        while self.running:
+            screen.fill(colors.BACKGROUND_COLOR)
+            for event in pygame.event.get():
+                # Allows the window to be closed on QUIT ("X" at top right of the window)
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+            if self.state == "home":
+                self.home_page()
+            elif self.state == "input":
+                self.input_page()
+            elif self.state == "algorithm":
+                self.algorithm_page()
+
+            # Displays contents onto screen
+            pygame.display.update()
+
+            # Sets the FPS of the window to 60
+            clock.tick(60)
+
+        pygame.quit()
+    
+    def home_page(self):
+        pass
+
+    def input_page(self):
+        pass
+
+    def algorithm_page(self):
+        pass
+
 def init() -> None:
     binary_search_array: BinarySearch = None
 
@@ -95,4 +136,5 @@ def init() -> None:
 
 
 if __name__ == "__main__":
-   init()
+    visualizer = AlgorithmVisualizer()
+    visualizer.run()
