@@ -65,7 +65,7 @@ class BinarySearch:
         
         return None
     
-    def search_step(self) -> None:
+    def next_step(self) -> None:
         if self._solution_found:
             pass
         else:

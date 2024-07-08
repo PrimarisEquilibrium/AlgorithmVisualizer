@@ -139,16 +139,15 @@ class AlgorithmVisualizer:
                     input_box.handle_focus(events, mouse_x, mouse_y)
 
     def algorithm_page(self):
-        # Draw out the algorithms
-        if self.algorithm_chosen == "bsa":
-            binary_search_array: BinarySearch = self.current_algorithm_obj
-            if binary_search_array:
-                binary_search_array.draw(screen)
-                current_time = pygame.time.get_ticks()
-                if current_time - self.time >= self.interval:
-                    self.time = current_time
-                    binary_search_array.draw(screen)
-                    binary_search_array.search_step()
+        # Draw out the algorithm
+        # Algorithms must have a draw and next_step function
+        if self.current_algorithm_obj:
+            self.current_algorithm_obj.draw(screen)
+            current_time = pygame.time.get_ticks()
+            if current_time - self.time >= self.interval:
+                self.time = current_time
+                self.current_algorithm_obj.draw(screen)
+                self.current_algorithm_obj.next_step()
 
 
 if __name__ == "__main__":
