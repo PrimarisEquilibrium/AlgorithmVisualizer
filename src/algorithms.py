@@ -91,3 +91,59 @@ class BinarySearch:
         draw_text(screen, font, colors.SELECTED_COLOR, f"Steps: {self.steps}", self.x, self.y + 70)
         
         self.cell_array_obj.draw(self.x, self.y)
+
+
+def insertion_sort(array):
+    def swap(i1, i2):
+        array[i1], array[i2] = array[i2], array[i1]
+    
+    for i in range(1, len(array)):
+        print(f"Step {i}: {array}")
+        j = i
+        while j > 0 and array[j] < array[j - 1]:
+            swap(j, j - 1)
+            j -= 1
+
+    return array
+
+class InsertionSort:
+    def __init__(self, cell_array_obj: CellArray, x: int, y: int) -> None:
+        self.cell_array_obj = cell_array_obj
+        self.cell_array = cell_array_obj.cell_array
+        self.x = x
+        self.y = y
+
+        self.i = 1
+        self.cell_array_obj.set_solution(0)
+        self.j = self.i
+        self.swap_complete = False
+        self.solved = False
+    
+    def mark_correct_spots(self) -> None:
+        self.cell_array_obj.set_solution(0, self.i)
+    
+    def swap(self) -> None:
+        print(self.j)
+        print(self.cell_array_obj)
+        if self.j > 0 and self.cell_array[self.j].value < self.cell_array[self.j - 1].value:
+            self.cell_array_obj.swap(self.j, self.j - 1)
+            self.j -= 1
+        else:
+            self.swap_complete = True
+            self.mark_correct_spots()
+
+    def next_step(self) -> None:
+        if not self.solved:
+            if self.i < len(self.cell_array) - 1 or self.j > 0:
+                if self.swap_complete:
+                    if self.i + 1 < len(self.cell_array):
+                        self.i += 1
+                    self.j = self.i
+                    self.swap_complete = False
+                self.swap()
+            else:
+                self.mark_correct_spots()
+                self.solved = True
+
+    def draw(self) -> None:
+        self.cell_array_obj.draw(self.x, self.y)

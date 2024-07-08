@@ -124,3 +124,16 @@ class CellArray():
 
     def set_selected(self, index: int) -> None:
         self.cell_array[index].set_selected()
+
+    def set_solution(self, start: int, end: int = None) -> None:
+        if end is None:
+            # Single index case
+            index = start
+            self.cell_array[index].set_custom_color(colors.SOLUTION)
+        else:
+            # Range case
+            for i in range(start, end + 1):
+                self.cell_array[i].set_custom_color(colors.SOLUTION)
+
+    def swap(self, i1: int, i2: int) -> None:
+        self.cell_array[i1], self.cell_array[i2] = self.cell_array[i2], self.cell_array[i1]
