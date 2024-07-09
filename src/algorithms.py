@@ -28,9 +28,6 @@ class BinarySearch:
         # Pointers to array search area
         self.left, self.right = self.start, self.end
 
-        # Steps the algorithm has performed so far
-        self.steps = 0
-
         # Private state / variable iterators
         self._state = BSState.GET_GUESS
         self._solution_found = False
@@ -83,12 +80,8 @@ class BinarySearch:
                 self.compare_guess()
                 self._state = BSState.GET_GUESS
 
-                # A "step" in the algorithm occurs after both states are complete
-                self.steps += 1
-
     def draw(self, screen: pygame.Surface) -> None:
         draw_text(screen, header, colors.SELECTED_COLOR, "Binary Search Algorithm", self.x, self.y - 100)
-        draw_text(screen, font, colors.SELECTED_COLOR, f"Steps: {self.steps}", self.x, self.y + 70)
         
         self.cell_array_obj.draw(self.x, self.y)
 
@@ -105,7 +98,6 @@ class InsertionSort:
         self.j = self.i
         self.swap_complete = False
         self.solved = False
-        self.steps = 0
 
     def mark_correct_spots(self) -> None:
         self.cell_array_obj.set_solution(0, self.i)
@@ -127,13 +119,10 @@ class InsertionSort:
                     self.j = self.i
                     self.swap_complete = False
                 self.swap()
-                self.steps += 1
             else:
                 self.mark_correct_spots()
                 self.solved = True
 
     def draw(self, screen: pygame.Surface) -> None:
         draw_text(screen, header, colors.SELECTED_COLOR, "Insertion Sort Algorithm", self.x, self.y - 100)
-        draw_text(screen, font, colors.SELECTED_COLOR, f"Steps: {self.steps}", self.x, self.y + 70)
-
         self.cell_array_obj.draw(self.x, self.y)

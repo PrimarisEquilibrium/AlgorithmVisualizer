@@ -3,8 +3,8 @@ from typing import Optional, Any
 
 from cell import CellArray
 from algorithms import BinarySearch, InsertionSort
-from config import colors
-from widgets import InputBox, Button
+from config import colors, font, header
+from widgets import InputBox, Button, draw_text, draw_centered_text
 
 
 # pygame setup
@@ -14,6 +14,9 @@ pygame.display.set_caption("Kevin's Algorithm Visualizer")
 # Screen settings
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+CTR_X = SCREEN_WIDTH / 2
+CTR_Y = SCREEN_HEIGHT / 2
 
 # pygame Handlers
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -33,10 +36,17 @@ class AlgorithmVisualizer:
         self.input_boxes = []
         self.buttons = []
 
+        # Variables to ensure buttons are evenly spaced
+        starting_x = 100
+        btn_height = 60
+        padding = 20
+        spacing = btn_height + padding
         self.home_buttons = [
-            {"label": "bsa", "obj": Button(screen, "Binary Search Algorithm", 50, 50, 260, 60, (lambda: None))},
-            {"label": "isa", "obj": Button(screen, "Insertion Sort Algorithm", 50, 130, 260, 60, (lambda: None))}
+            {"label": "bsa", "obj": Button(screen, "Binary Search Algorithm", 50, starting_x, 260, 60, (lambda: None))},
+            {"label": "isa", "obj": Button(screen, "Insertion Sort Algorithm", 50, starting_x + spacing, 260, 60, (lambda: None))}
         ]
+
+        self.back_button = Button(screen, "Return to home", 50, SCREEN_HEIGHT - 100, 200, 60, lambda: None)
 
     def cell_array_init(self, user_input: str) -> Optional[CellArray]:
         try:
@@ -57,24 +67,25 @@ class AlgorithmVisualizer:
         # Returns all the typed values in all input boxes
         for input_box in self.input_boxes:
             results.append(input_box.get_value())
+            input_box.textinput.value = ""
         return results
 
     def initialize_ui_elements(self):
         # Depending on what algorithm is chosen initialize different UI elements
         if self.algorithm_chosen == "bsa":
             self.input_boxes = [
-                InputBox(screen, "Array to search (seperated by commas)", 35, 60, 500, 50, 30),
-                InputBox(screen, "Value to find", 35, 160, 500, 50)
+                InputBox(screen, "Array to search (seperated by commas)", 50, 140, 500, 50, 30),
+                InputBox(screen, "Value to find", 50, 240, 500, 50)
             ]
             self.buttons = [
-                Button(screen, "Submit", 35, 240, 125, 60, self.get_input_data)
+                Button(screen, "Submit", 50, 320, 125, 60, self.get_input_data)
             ]
         elif self.algorithm_chosen == "isa":
             self.input_boxes = [
-                InputBox(screen, "Array to sort (seperated by commas)", 35, 60, 500, 50, 30),
+                InputBox(screen, "Array to sort (seperated by commas)", 50, 140, 500, 50, 30),
             ]
             self.buttons = [
-                Button(screen, "Submit", 35, 130, 125, 60, self.get_input_data)
+                Button(screen, "Submit", 50, 220, 125, 60, self.get_input_data)
             ]
     
     def run(self) -> None:
@@ -91,7 +102,7 @@ class AlgorithmVisualizer:
             elif self.state == "input":
                 self.input_page(events)
             elif self.state == "algorithm":
-                self.algorithm_page()
+                self.algorithm_page(events)
 
             # Displays contents onto screen
             pygame.display.update()
@@ -102,6 +113,8 @@ class AlgorithmVisualizer:
         pygame.quit()
     
     def home_page(self, events):
+        draw_centered_text(screen, header, colors.SELECTED_COLOR, "Algorithm Visualizer", CTR_X, 50)
+
         # Home page contains buttons to select an algorithm
         for button in self.home_buttons:
             button["obj"].draw()
@@ -117,6 +130,8 @@ class AlgorithmVisualizer:
     
     _ui_variables_bounded = False
     def input_page(self, events):
+        draw_text(screen, header, colors.SELECTED_COLOR, "Enter algorithm arguments", 50, 30)
+
         # Only initialize the ui element variables one time
         if not self._ui_variables_bounded:
             self.initialize_ui_elements()
@@ -151,7 +166,14 @@ class AlgorithmVisualizer:
                 for input_box in self.input_boxes:
                     input_box.handle_focus(events, mouse_x, mouse_y)
 
-    def algorithm_page(self):
+    def algorithm_page(self, events: pygame.event.Event):
+        self.back_button.draw()
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if self.back_button.is_mouse_over(mouse_x, mouse_y):
+                    self.state = "home"
+
         # Draw out the algorithm
         # Algorithms must have a draw and next_step function
         if self.current_algorithm_obj:
