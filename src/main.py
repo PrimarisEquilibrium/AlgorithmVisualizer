@@ -2,7 +2,7 @@ import pygame
 from typing import Optional, Any
 
 from cell import CellArray
-from algorithms import BinarySearch
+from algorithms import BinarySearch, InsertionSort
 from config import colors
 from widgets import InputBox, Button
 
@@ -34,7 +34,8 @@ class AlgorithmVisualizer:
         self.buttons = []
 
         self.home_buttons = [
-            {"label": "bsa", "obj": Button(screen, "Binary Search Algorithm", 50, 50, 260, 60, (lambda: None))}
+            {"label": "bsa", "obj": Button(screen, "Binary Search Algorithm", 50, 50, 260, 60, (lambda: None))},
+            {"label": "isa", "obj": Button(screen, "Insertion Sort Algorithm", 50, 130, 260, 60, (lambda: None))}
         ]
 
     def cell_array_init(self, user_input: str) -> Optional[CellArray]:
@@ -67,6 +68,13 @@ class AlgorithmVisualizer:
             ]
             self.buttons = [
                 Button(screen, "Submit", 35, 240, 125, 60, self.get_input_data)
+            ]
+        elif self.algorithm_chosen == "isa":
+            self.input_boxes = [
+                InputBox(screen, "Array to sort (seperated by commas)", 35, 60, 500, 50, 30),
+            ]
+            self.buttons = [
+                Button(screen, "Submit", 35, 130, 125, 60, self.get_input_data)
             ]
     
     def run(self) -> None:
@@ -131,8 +139,13 @@ class AlgorithmVisualizer:
                         match self.algorithm_chosen:
                             case "bsa":
                                 user_input, val = button.on_click()
+                                print(user_input)
                                 cell_array = self.cell_array_init(user_input)
                                 self.current_algorithm_obj = BinarySearch(cell_array, int(val), 50, 140)
+                            case "isa":
+                                user_input = button.on_click()[0]
+                                cell_array = self.cell_array_init(user_input)
+                                self.current_algorithm_obj = InsertionSort(cell_array, 50, 140)
                         self.state = "algorithm"
 
                 for input_box in self.input_boxes:
