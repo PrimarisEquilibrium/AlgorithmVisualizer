@@ -173,6 +173,11 @@ class AlgorithmVisualizer:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 if self.back_button.is_mouse_over(mouse_x, mouse_y):
                     self.state = "home"
+                    self.algorithm_chosen = None
+                    self.current_algorithm_obj = None
+                    self.input_boxes = []
+                    self.buttons = []
+                    self._ui_variables_bounded = False
 
         # Draw out the algorithm
         # Algorithms must have a draw and next_step function
