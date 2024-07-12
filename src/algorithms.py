@@ -126,3 +126,24 @@ class InsertionSort:
     def draw(self, screen: pygame.Surface) -> None:
         draw_text(screen, header, colors.SELECTED_COLOR, "Insertion Sort Algorithm", self.x, self.y - 100)
         self.cell_array_obj.draw(self.x, self.y)
+
+
+class Node:
+    def __init__(self) -> None:
+        pass
+
+
+class MinHeap:
+    def __init__(self) -> None:
+        pass
+
+
+class Dijkstra:
+    def __init__(self) -> None:
+        pass
+
+    def draw(self, screen: pygame.Surface) -> None:
+        pass
+
+    def next_step(self) -> None:
+        pass
