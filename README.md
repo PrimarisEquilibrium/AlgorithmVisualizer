@@ -4,6 +4,7 @@ Welcome to my algorithm visualizer! This project serves as a simple way to visua
 ## Features
 **Algorithms Available**
 - Binary Search Algorithm
+- Insertion Sort Algorithm
 
 **Algorithms Being Added in the Future**
 - Merge Sort
