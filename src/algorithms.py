@@ -129,8 +129,13 @@ class InsertionSort:
 
 
 class Node:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, value) -> None:
+        self.value = value
+        self.left = None
+        self.right = None
+    
+    def __str__(self) -> str:
+        return f"{self.value}"
 
 
 class MinHeap:
