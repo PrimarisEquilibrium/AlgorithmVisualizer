@@ -23,4 +23,4 @@ Welcome to my Python algorithm visualizer! This project serves as a simple way t
 
 <img src="public/screenshots/arguments.png" alt="binary search argument page screenshot" width=50% height=50%>
 <br>
-<img src="public/screenshots/binary_search.png.png" alt="binary search argument page screenshot" width=50% height=50%>
+<img src="public/screenshots/binary_search.png" alt="binary search argument page screenshot" width=50% height=50%>
