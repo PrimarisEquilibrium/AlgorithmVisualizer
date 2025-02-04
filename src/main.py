@@ -1,10 +1,10 @@
 import pygame
-from typing import Optional, Any
+from typing import Any
 
-from cell import CellArray
-from algorithms import BinarySearch, InsertionSort
-from config import colors, font, header
-from widgets import InputBox, Button, draw_text, draw_centered_text
+from algorithms import BinarySearch, BinarySearchUI, InsertionSort, InsertionSortUI
+from config import colors, header
+from widgets import Button, draw_text, draw_centered_text
+from utils import cell_array_init
 
 
 # pygame setup
@@ -48,20 +48,6 @@ class AlgorithmVisualizer:
 
         self.back_button = Button(screen, "Return to home", 50, SCREEN_HEIGHT - 100, 200, 60, lambda: None)
 
-    def cell_array_init(self, user_input: str) -> Optional[CellArray]:
-        try:
-            # String cleaning
-            user_array = ''.join(user_input.split())
-            user_array = user_array.split(",")
-            
-            # Converts each string number into an integer
-            user_array = list(map(lambda x : int(x), user_array))
-
-            cell_array = CellArray(screen, user_array)
-            return cell_array
-        except ValueError:
-            print("Invalid input")
-
     def get_input_data(self) -> list[Any]:
         results = []
         # Returns all the typed values in all input boxes
@@ -73,20 +59,13 @@ class AlgorithmVisualizer:
     def initialize_ui_elements(self):
         # Depending on what algorithm is chosen initialize different UI elements
         if self.algorithm_chosen == "bsa":
-            self.input_boxes = [
-                InputBox(screen, "Array to search (seperated by commas)", 50, 140, 500, 50, 30),
-                InputBox(screen, "Value to find", 50, 240, 500, 50)
-            ]
-            self.buttons = [
-                Button(screen, "Submit", 50, 320, 125, 60, self.get_input_data)
-            ]
+            binary_search_ui = BinarySearchUI(screen)
+            self.input_boxes = binary_search_ui.input_boxes
+            self.buttons = binary_search_ui.buttons
         elif self.algorithm_chosen == "isa":
-            self.input_boxes = [
-                InputBox(screen, "Array to sort (seperated by commas)", 50, 140, 500, 50, 30),
-            ]
-            self.buttons = [
-                Button(screen, "Submit", 50, 220, 125, 60, self.get_input_data)
-            ]
+            insertion_sort_ui = InsertionSortUI(screen)
+            self.input_boxes = insertion_sort_ui.input_boxes
+            self.buttons = insertion_sort_ui.buttons
     
     def run(self) -> None:
         while self.running:
@@ -155,11 +134,11 @@ class AlgorithmVisualizer:
                             case "bsa":
                                 user_input, val = button.on_click()
                                 print(user_input)
-                                cell_array = self.cell_array_init(user_input)
+                                cell_array = cell_array_init(screen, user_input)
                                 self.current_algorithm_obj = BinarySearch(cell_array, int(val), 50, 140)
                             case "isa":
                                 user_input = button.on_click()[0]
-                                cell_array = self.cell_array_init(user_input)
+                                cell_array = cell_array_init(screen, user_input)
                                 self.current_algorithm_obj = InsertionSort(cell_array, 50, 140)
                         self.state = "algorithm"
 
