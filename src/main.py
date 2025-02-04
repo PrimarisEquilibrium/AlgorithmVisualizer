@@ -48,14 +48,6 @@ class AlgorithmVisualizer:
 
         self.back_button = Button(screen, "Return to home", 50, SCREEN_HEIGHT - 100, 200, 60, lambda: None)
 
-    def get_input_data(self) -> list[Any]:
-        results = []
-        # Returns all the typed values in all input boxes
-        for input_box in self.input_boxes:
-            results.append(input_box.get_value())
-            input_box.textinput.value = ""
-        return results
-
     def initialize_ui_elements(self):
         # Depending on what algorithm is chosen initialize different UI elements
         if self.algorithm_chosen == "bsa":

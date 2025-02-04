@@ -1,6 +1,9 @@
 import pygame
+
 from cell import CellArray
-from typing import Union
+from typing import Union, Any
+from widgets import InputBox
+
 
 def cell_array_init(screen: pygame.Surface, user_input: str) -> Union[CellArray, None]:
     try:
@@ -16,3 +19,13 @@ def cell_array_init(screen: pygame.Surface, user_input: str) -> Union[CellArray,
     except ValueError:
         print("Invalid input")
         return None
+
+def get_input_data(input_boxes: list[InputBox]) -> list[Any]:
+    def callback():
+        results = []
+        # Returns all the typed values in all input boxes
+        for input_box in input_boxes:
+            results.append(input_box.get_value())
+            input_box.textinput.value = ""
+        return results
+    return callback

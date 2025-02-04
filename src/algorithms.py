@@ -3,8 +3,9 @@ from enum import Enum
 from typing import Optional, Any
 
 from cell import CellArray
-from config import colors, font, header
+from config import colors, header
 from widgets import draw_text, InputBox, Button
+from utils import get_input_data
 
 
 class BSState(Enum):
@@ -93,16 +94,8 @@ class BinarySearchUI:
             InputBox(screen, "Value to find", 50, 240, 500, 50)
         ]
         self.buttons = [
-            Button(screen, "Submit", 50, 320, 125, 60, self.get_input_data)
+            Button(screen, "Submit", 50, 320, 125, 60, get_input_data(self.input_boxes))
         ]
-    
-    def get_input_data(self) -> list[Any]:
-        results = []
-        # Returns all the typed values in all input boxes
-        for input_box in self.input_boxes:
-            results.append(input_box.get_value())
-            input_box.textinput.value = ""
-        return results
 
 
 class InsertionSort:
@@ -146,22 +139,15 @@ class InsertionSort:
         draw_text(screen, header, colors.SELECTED_COLOR, "Insertion Sort Algorithm", self.x, self.y - 100)
         self.cell_array_obj.draw(self.x, self.y)
 
+
 class InsertionSortUI:
     def __init__(self, screen: pygame.Surface) -> None:
         self.input_boxes = [
             InputBox(screen, "Array to sort (seperated by commas)", 50, 140, 500, 50, 30),
         ]
         self.buttons = [
-            Button(screen, "Submit", 50, 220, 125, 60, self.get_input_data)
+            Button(screen, "Submit", 50, 220, 125, 60, get_input_data(self.input_boxes))
         ]
-    
-    def get_input_data(self) -> list[Any]:
-        results = []
-        # Returns all the typed values in all input boxes
-        for input_box in self.input_boxes:
-            results.append(input_box.get_value())
-            input_box.textinput.value = ""
-        return results
 
 
 class Node:
