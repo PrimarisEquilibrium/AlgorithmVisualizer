@@ -3,15 +3,15 @@ import pygame_textinput
 
 from typing import Callable
 from cell import font
-from config import Colors, colors, font
+from config import Color, colors, font
 
 
-def draw_text(screen: pygame.Surface, font: pygame.font.Font, color: Colors, text: str, x: int, y: int) -> None:
+def draw_text(screen: pygame.Surface, font: pygame.font.Font, color: Color, text: str, x: int, y: int) -> None:
     text = font.render(f"{text}", True, color)
     screen.blit(text, (x, y))
 
 
-def draw_centered_text(screen: pygame.Surface, font: pygame.font.Font, color: Colors, text: str, x: int, y: int):
+def draw_centered_text(screen: pygame.Surface, font: pygame.font.Font, color: Color, text: str, x: int, y: int):
     text: pygame.Surface = font.render(f"{text}", True, color)
     text_rect = text.get_rect(center=(x, y))
     screen.blit(text, text_rect)

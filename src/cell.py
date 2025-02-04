@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum
 
-from config import rect_size, border_size, Colors, colors, font
+from config import rect_size, border_size, Color, colors, font
 from widgets import draw_centered_text
 
 
@@ -14,7 +14,7 @@ class CellState(Enum):
 
 # A Cell class containing a value and visual state
 class Cell:
-    def __init__(self, value: int, state: CellState = CellState.ACTIVE, custom_color: Colors = None) -> None:
+    def __init__(self, value: int, state: CellState = CellState.ACTIVE, custom_color: Color = None) -> None:
         self.value = value
         self.state = state
         self.custom_color = custom_color
@@ -23,13 +23,12 @@ class Cell:
         return f"Cell({self.value}, {self.state.name})"
     
     def draw(self, screen: pygame.Surface, x: int, y: int) -> None:
-        """
-        Draws a single cell with its label and visual state.
+        """Draws a single cell with its label and visual state.
 
-        :param screen: The pygame screen
-        :param cell: Cell object.
-        :param x: X-Position of cell.
-        :param y: Y-Position of cell.
+        Args:
+            screen (pygame.Surface): The pygame screen.
+            x (int): x-position of cell.
+            y (int): y-position of cell.
         """
 
         color = self.get_color()
@@ -54,10 +53,15 @@ class Cell:
     def set_selected(self) -> None:
         self.state = CellState.SELECTED
 
-    def set_custom_color(self, custom_color: Colors) -> None:
+    def set_custom_color(self, custom_color: Color) -> None:
         self.custom_color = custom_color
 
-    def get_color(self) -> Colors:
+    def get_color(self) -> Color:
+        """Returns the color hex of the cell.
+
+        Returns:
+            Colors: The hex color of the cell.
+        """
         if self.custom_color:
             return self.custom_color
         else:
@@ -83,13 +87,11 @@ class CellArray():
         return len(self.cell_array)
     
     def draw(self, x_offset: int, y_offset: int) -> None:
-        """
-        Draws a horizontal sequence of cells, where each cell corresponds to an element in the given cell array.
+        """Draws a horizontal sequence of cells, where each cell corresponds to an element in the given cell array.
 
-        :param screen: The pygame screen
-        :param cell_array: Cell array to draw.
-        :param x_offset: X-Offset from top left corner of screen.
-        :param y_offset: Y-Offset from top left corner of screen.
+        Args:
+            x_offset (int): x-offset from top left corner of screen.
+            y_offset (int): y-offset from top left corner of screen.
         """
 
         for i, cell in enumerate(self.cell_array):
